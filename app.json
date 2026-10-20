@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "BIT240029_FoodManager",
+    "slug": "bit240029-foodmanager",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#f6f7f2"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.bit240029.foodmanager"
+    },
+    "plugins": [
+      "expo-status-bar"
+    ]
+  }
+}
