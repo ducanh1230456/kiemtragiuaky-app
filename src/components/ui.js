@@ -11,7 +11,7 @@ export function Field({ label, value, onChangeText, placeholder, keyboardType, m
 }
 
 export function Header({ title, onBack, right, backLabel = 'Back' }) {
-  return <View style={styles.header}>{onBack ? <Pressable onPress={onBack}><Text style={styles.link}>‹  {backLabel}</Text></Pressable> : <View><Text style={styles.eyebrow}>BIT240029_FOODMANAGER</Text><Text style={styles.headerTitle}>{title}</Text></View>}{right || null}</View>;
+  return <View style={styles.header}>{onBack ? <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1, marginRight: 10 }}><Pressable onPress={onBack}><Text style={styles.link}>‹  {backLabel}</Text></Pressable>{title ? <Text style={[styles.headerTitle, { flex: 1 }]} numberOfLines={1}>{title}</Text> : null}</View> : <View><Text style={styles.eyebrow}>BIT240029_FOODMANAGER</Text><Text style={styles.headerTitle}>{title}</Text></View>}{right || null}</View>;
 }
 
 export function Chip({ title, active, onPress }) {

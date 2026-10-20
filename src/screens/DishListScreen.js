@@ -2,10 +2,14 @@ import React, { useMemo, useState } from 'react';
 import { Image, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { Button, Chip } from '../components/ui';
 import { styles } from '../components/styles';
+import { getCategoryDisplayName } from '../i18n';
 
 export default function DishListScreen({ data, t, filters, setFilters, onOpenDish, onAdd, onCategories, onSettings, onLanguage }) {
   const update = (key, value) => setFilters(current => ({ ...current, [key]: value }));
-  const categoryName = id => data.categories.find(category => category.id === id)?.name || '—';
+  const categoryName = id => {
+    const category = data.categories.find(item => item.id === id);
+    return getCategoryDisplayName(category, t);
+  };
   const visible = useMemo(() => {
     const result = data.dishes.filter(dish =>
       dish.name.toLowerCase().includes(filters.query.trim().toLowerCase()) &&
@@ -24,7 +28,7 @@ export default function DishListScreen({ data, t, filters, setFilters, onOpenDis
     <View style={styles.row}><View style={{ flex: 1 }}><Text style={styles.eyebrow}>BIT240029_FOODMANAGER</Text><Text style={styles.title}>{t.appName}</Text></View><Pressable onPress={onLanguage} style={styles.languageButton}><Text style={styles.languageText}>{t.language}</Text></Pressable></View>
     <Text style={styles.subtitle}>{t.tagline}</Text>
     <View style={styles.row}><TextInput value={filters.query} onChangeText={value => update('query', value)} placeholder={t.search} placeholderTextColor="#98a09b" style={[styles.search, { flex: 1, marginBottom: 10 }]} /><Pressable onPress={onSettings} style={styles.languageButton}><Text style={styles.languageText}>⚙</Text></Pressable></View>
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontal}><Chip title={t.allCategories} active={filters.categoryId === 'all'} onPress={() => update('categoryId', 'all')} />{data.categories.map(category => <Chip key={category.id} title={category.name} active={filters.categoryId === category.id} onPress={() => update('categoryId', category.id)} />)}</ScrollView>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontal}><Chip title={t.allCategories} active={filters.categoryId === 'all'} onPress={() => update('categoryId', 'all')} />{data.categories.map(category => <Chip key={category.id} title={getCategoryDisplayName(category, t)} active={filters.categoryId === category.id} onPress={() => update('categoryId', category.id)} />)}</ScrollView>
     <View style={styles.panel}><View style={styles.row}><Text style={styles.label}>{t.sellingOnly}</Text><Switch value={filters.availableOnly} onValueChange={value => update('availableOnly', value)} trackColor={{ true: '#d66a45' }} /></View><View style={styles.row}><TextInput value={filters.minPrice} onChangeText={value => update('minPrice', value.replace(/\D/g, ''))} placeholder={t.minPrice} keyboardType="numeric" style={styles.smallInput} /><TextInput value={filters.maxPrice} onChangeText={value => update('maxPrice', value.replace(/\D/g, ''))} placeholder={t.maxPrice} keyboardType="numeric" style={styles.smallInput} /></View><View style={[styles.wrap, { marginTop: 10 }]}><Text style={styles.sortLabel}>{t.sort}</Text>{[['defaultSort', 'default'], ['priceAsc', 'priceAsc'], ['priceDesc', 'priceDesc'], ['timeAsc', 'timeAsc']].map(([label, value]) => <Pressable key={value} onPress={() => update('sort', value)} style={[styles.sortChip, filters.sort === value && styles.sortChipActive]}><Text style={[styles.sortText, filters.sort === value && styles.chipTextActive]}>{t[label]}</Text></Pressable>)}</View></View>
     <View style={[styles.row, { marginTop: 20, marginBottom: 11 }]}><Text style={styles.sectionTitle}>{visible.length} {t.dishes}</Text><Pressable onPress={onCategories}><Text style={styles.linkSmall}>{t.categories} →</Text></Pressable></View>
     {filters.minPrice && filters.maxPrice && Number(filters.minPrice) > Number(filters.maxPrice) ? <Text style={styles.empty}>{t.badRange}</Text> : visible.length === 0 ? <Text style={styles.empty}>{t.empty}</Text> : visible.map(dish => {

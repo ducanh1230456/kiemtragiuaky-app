@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { Button, Field, Header } from '../components/ui';
 import { styles } from '../components/styles';
+import { getCategoryDisplayName } from '../i18n';
 
 const emptyDish = categoryId => ({ id: '', name: '', price: '', preparationTime: '', isAvailable: true, description: '', dishCategoryId: categoryId || '', dishImage: [] });
 
@@ -38,7 +39,7 @@ export default function DishFormScreen({ dish, categories, t, onSave, onBack, on
     <Field label={t.name} value={draft.name} onChangeText={value => setDraft(current => ({ ...current, name: value }))} />
     <Field label={t.price} value={String(draft.price)} onChangeText={value => setDraft(current => ({ ...current, price: value.replace(/\D/g, '') }))} keyboardType="numeric" />
     <Field label={t.preparation} value={String(draft.preparationTime)} onChangeText={value => setDraft(current => ({ ...current, preparationTime: value.replace(/\D/g, '') }))} keyboardType="numeric" />
-    <Text style={styles.label}>{t.category}</Text><View style={[styles.wrap, { marginBottom: 14 }]}>{categories.map(category => <Pressable key={category.id} onPress={() => setDraft(current => ({ ...current, dishCategoryId: category.id }))} style={[styles.choice, draft.dishCategoryId === category.id && styles.choiceActive]}><Text style={[styles.choiceText, draft.dishCategoryId === category.id && styles.choiceTextActive]}>{category.name}</Text></Pressable>)}</View>
+    <Text style={styles.label}>{t.category}</Text><View style={[styles.wrap, { marginBottom: 14 }]}>{categories.map(category => <Pressable key={category.id} onPress={() => setDraft(current => ({ ...current, dishCategoryId: category.id }))} style={[styles.choice, draft.dishCategoryId === category.id && styles.choiceActive]}><Text style={[styles.choiceText, draft.dishCategoryId === category.id && styles.choiceTextActive]}>{getCategoryDisplayName(category, t)}</Text></Pressable>)}</View>
     <View style={[styles.row, { marginBottom: 12 }]}><Text style={styles.label}>{draft.isAvailable ? t.available : t.unavailable}</Text><Switch value={draft.isAvailable} onValueChange={value => setDraft(current => ({ ...current, isAvailable: value }))} trackColor={{ true: '#d66a45' }} /></View>
     <Field label={t.description} value={draft.description} onChangeText={value => setDraft(current => ({ ...current, description: value }))} multiline />
     <Text style={styles.label}>{t.images}</Text><View style={styles.row}><View style={{ flex: 1 }}><Field label="" value={imageUrl} onChangeText={setImageUrl} placeholder={t.imageUrl} autoCapitalize="none" /></View><Button title={t.addImage} onPress={addImage} compact /></View>
